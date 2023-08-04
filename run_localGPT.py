@@ -207,7 +207,7 @@ def main(device_type, show_sources):
     qa = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever, return_source_documents=True)
     # Interactive questions and answers
     #while True:
-    def CustomChatGPT(user_input):
+    def CustomChatGPT(message):
         #query = input("\nEnter a query: ")
         query=user_input
         #if query == "exit":
@@ -216,7 +216,7 @@ def main(device_type, show_sources):
         res = qa(query)
         answer, docs = res["result"], res["source_documents"]
 
-        return answer
+        return f"{answer}"
 
         # Print the result
         #print("\n\n> Question:")
@@ -231,7 +231,7 @@ def main(device_type, show_sources):
                 #print("\n> " + document.metadata["source"] + ":")
                 #print(document.page_content)
             #print("----------------------------------SOURCE DOCUMENTS---------------------------")
-    demo = gradio.Interface(fn=CustomChatGPT, inputs = "text", outputs = "text", title="Your Title")
+    demo = gradio.ChatInterface(fn=CustomChatGPT, inputs = "text", outputs = "text", title="Your Title")
     demo.launch(share=True)
 
 if __name__ == "__main__":
