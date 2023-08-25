@@ -9,6 +9,7 @@ from huggingface_hub import hf_hub_download
 from langchain.chains import RetrievalQA
 from langchain.embeddings import HuggingFaceInstructEmbeddings
 from langchain.llms import HuggingFacePipeline, LlamaCpp
+from langchain.prompts import PromptTemplate
 
 # from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.vectorstores import Chroma
@@ -196,15 +197,23 @@ def main(device_type, show_sources):
     # load the LLM for generating Natural Language responses
 
     
-    
+    template = """Use the following pieces of context to answer the question at the end. If you don't know the answer,\
+    just say that you don't know, don't try to make up an answer.
+
+    {context}
+
+    Question: {question}
+    Helpful Answer:"""
+
+    prompt = PromptTemplate(input_variables=["context", "question"], template=template)
 
    
     model_id = "TheBloke/Llama-2-7b-Chat-GPTQ"
-    model_basename = "gptq_model-4bit-128g"
+    model_basename = "model"
 
     llm = load_model(device_type, model_id=model_id, model_basename=model_basename)
 
-    qa = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever, return_source_documents=True)
+    qa = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever, return_source_documents=True,chain_type_kwargs={"prompt": prompt})
     # Interactive questions and answers
     #while True:
     def CustomChatGPT(message,history):
