@@ -77,7 +77,7 @@ def load_model(device_type, model_id, model_basename=None):
 
             model = AutoGPTQForCausalLM.from_quantized(
                 model_id,
-                model_basename=model_basename,
+                #model_basename=model_basename,
                 use_safetensors=True,
                 trust_remote_code=True,
                 device="cuda:0",
@@ -209,9 +209,10 @@ def main(device_type, show_sources):
 
    
     model_id = "TheBloke/Llama-2-7b-Chat-GPTQ"
-    model_basename = "model"
+    #model_basename = "model"
 
-    llm = load_model(device_type, model_id=model_id, model_basename=model_basename)
+    #llm = load_model(device_type, model_id=model_id, model_basename=model_basename)
+    llm = load_model(device_type, model_id=model_id)
 
     qa = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever, return_source_documents=True,chain_type_kwargs={"prompt": prompt})
     # Interactive questions and answers
